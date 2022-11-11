@@ -67,7 +67,6 @@ function getBaseMapAndLayers() {
 </script>
 
 <template>
-  
   <div id="map"></div>
 </template>
 

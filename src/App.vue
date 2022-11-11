@@ -1,9 +1,16 @@
-<script setup>
-import { RouterLink, RouterView } from 'vue-router'
+<script>
+
+import Map from "@/components/Map.vue";
+
+export default {
+  components: { Map },
+};
+
+
 </script>
 
 <template>
-  <RouterView />
+  <Map/>
 </template>
 
 <style scoped>
