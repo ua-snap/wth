@@ -4,23 +4,27 @@ import "leaflet/dist/leaflet.css";
 import proj4 from "proj4";
 import p4l from "proj4leaflet";
 import { onMounted } from "vue";
-import { useMapStore } from '@/stores/map';
+import { useMapStore } from "@/stores/map";
 
-var mapStore = useMapStore()
+var mapStore = useMapStore();
 
 // Trigger search.
 function handleMapClick(event) {
   mapStore.latLng = [event.latlng.lat.toFixed(5), event.latlng.lng.toFixed(5)];
-  mapStore.search()
-  let k = mapStore.searchResults
-  let layer = L.geoJSON(mapStore.searchResults)
-  L.geoJSON(mapStore.searchResults).addTo(map);
+  console.log("mapstore.latLng", mapStore.latLng)
+  mapStore.search();
+  let layer;
+  if (mapStore.searchResults) {
+    layer = L.geoJSON(mapStore.searchResults);
+    L.geoJSON(mapStore.searchResults).addTo(map);
+  } else {
+    //whatev
+  }
 }
 
 onMounted(() => {
   map = L.map("map", getBaseMapAndLayers());
   map.on("click", handleMapClick);
-  
 });
 
 function getBaseMapAndLayers() {
@@ -52,7 +56,7 @@ function getBaseMapAndLayers() {
     zoom: 1,
     minZoom: 1,
     maxZoom: 6,
-    center: [64.7, -155],
+    center: [64.7, -152.5],
     scrollWheelZoom: false,
     crs: proj,
     continuousWorld: true,
@@ -73,6 +77,6 @@ function getBaseMapAndLayers() {
 <style scoped>
 #map {
   height: 100vh;
-  width: 100vw;
+  width: 100%;
 }
 </style>
