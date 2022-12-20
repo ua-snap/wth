@@ -5,10 +5,14 @@ import proj4 from "proj4";
 import p4l from "proj4leaflet";
 import { watch, onMounted } from "vue";
 import { useMapStore } from "@/stores/map";
-import { storeToRefs } from 'pinia'
+import { storeToRefs } from "pinia";
 
 var mapStore = useMapStore();
-const { searchResults } = storeToRefs(mapStore)
+const { searchResults } = storeToRefs(mapStore);
+
+// Has the geoJSON layer if any is present.
+var layer;
+var map;
 
 // Trigger search.
 function handleMapClick(event) {
@@ -23,10 +27,13 @@ onMounted(() => {
 
 // When the searchResults are updated, refresh the map.
 watch(searchResults, async () => {
-  let layer;
+  if (layer) {
+    map.removeLayer(layer);
+  }
+
   if (mapStore.searchResults) {
     layer = L.geoJSON(mapStore.searchResults);
-    L.geoJSON(mapStore.searchResults).addTo(map);
+    layer.addTo(map);
   } else {
     // No results, clear the map...?
   }
