@@ -1,6 +1,6 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
-import polys from "../assets/t2.json";
+import axios from "axios";
 
 export const useMapStore = defineStore("map", () => {
   // the ref() function is core Vue3 reactive model stuff.
@@ -15,8 +15,9 @@ export const useMapStore = defineStore("map", () => {
   });
 
   // An action.
-  function search() {
-    searchResults.value = polys;
+  async function search() {
+    let polys = await axios.get("http://localhost:5000");
+    searchResults.value = polys.data;
   }
 
   return { latLng, searchResults, isSearchActive, search };

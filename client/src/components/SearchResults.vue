@@ -11,12 +11,6 @@ const mapStore = useMapStore();
 // This seems clunky?  How to watch a single value?
 const { searchResults } = storeToRefs(mapStore)
 
-// Now we can watch it.
-watch(searchResults, async (lastResults, newResults) => {
-  console.log("new stuff happened!!");
-  console.log(newResults)
-});
-
 </script>
 
 <template>

@@ -3,28 +3,33 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import proj4 from "proj4";
 import p4l from "proj4leaflet";
-import { onMounted } from "vue";
+import { watch, onMounted } from "vue";
 import { useMapStore } from "@/stores/map";
+import { storeToRefs } from 'pinia'
 
 var mapStore = useMapStore();
+const { searchResults } = storeToRefs(mapStore)
 
 // Trigger search.
 function handleMapClick(event) {
   mapStore.latLng = [event.latlng.lat.toFixed(5), event.latlng.lng.toFixed(5)];
-  console.log("mapstore.latLng", mapStore.latLng)
   mapStore.search();
-  let layer;
-  if (mapStore.searchResults) {
-    layer = L.geoJSON(mapStore.searchResults);
-    L.geoJSON(mapStore.searchResults).addTo(map);
-  } else {
-    //whatev
-  }
 }
 
 onMounted(() => {
   map = L.map("map", getBaseMapAndLayers());
   map.on("click", handleMapClick);
+});
+
+// When the searchResults are updated, refresh the map.
+watch(searchResults, async () => {
+  let layer;
+  if (mapStore.searchResults) {
+    layer = L.geoJSON(mapStore.searchResults);
+    L.geoJSON(mapStore.searchResults).addTo(map);
+  } else {
+    // No results, clear the map...?
+  }
 });
 
 function getBaseMapAndLayers() {
