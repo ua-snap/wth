@@ -11,11 +11,11 @@ transformer = Transformer.from_crs(4326, 3338)
 
 @app.route("/")
 def fetch_polys():
-    lat = request.args.get("lat")
-    lng = request.args.get("lng")
-    radiusKm = request.args.get("r")
+    lat = float(request.args.get("lat"))
+    lng = float(request.args.get("lng"))
+    radiusKm = float(request.args.get("r"))
     coords = transformer.transform(lat, lng)
-    params = (coords[0], coords[1], float(radiusKm))
+    params = (coords[0], coords[1], radiusKm)
     print(params)
 
     cur = conn.cursor()

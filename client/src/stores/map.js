@@ -15,8 +15,11 @@ export const useMapStore = defineStore("map", () => {
   });
 
   // An action.
-  async function search() {
-    let polys = await axios.get("http://localhost:5000");
+  async function search(state) {
+    
+    let url = `http://localhost:5000?lat=${latLng.value[0]}&lng=${latLng.value[1]}&r=40000`
+    console.log(url)
+    let polys = await axios.get(url);
     searchResults.value = polys.data;
   }
 
