@@ -19,7 +19,7 @@ def fetch_polys():
     print(params)
 
     cur = conn.cursor()
-    sql = "SELECT json_build_object('type', 'FeatureCollection', 'features', json_agg(ST_AsGeoJSON(t.*)::json) ) FROM (select id, name, alt_name, ST_Transform( geom, 4326 ) as geom from merged_snap_polys m where ST_DWithin(m.geom, 'SRID=3338;POINT(%s %s)', %s)) as t;"
+    sql = f"SELECT json_build_object('type', 'FeatureCollection', 'features', json_agg(ST_AsGeoJSON(t.*)::json) ) FROM (select areasqkm, hucid, name, huclevel, ST_Transform( geom, 4326 ) as geom from hucs m where ST_DWithin(m.geom, 'SRID=3338;POINT(%s %s)', %s)) as t;"
     cur.execute(sql, params)
     res = cur.fetchone()  # because GeoJSON, just the one line is needed.
     cur.close()

@@ -10,13 +10,43 @@ import { storeToRefs } from "pinia";
 var mapStore = useMapStore();
 const { searchResults } = storeToRefs(mapStore);
 
-// Has the geoJSON layer if any is present.
-var layer;
+// A few objects to share between methods
+var layer; // the GeoJSON layer
 var map;
+var circle; // circle showing radius of search
+
+var huc8Style = {
+  opacity: 0.65,
+  fillOpacity: 0.1,
+  weight: 2,
+};
+
+var huc10Style = {
+  opacity: 0.75,
+  weight: 1,
+  fillOpacity: 0.15,
+  color: "#333333",
+};
+
+var huc12Style = {
+  opacity: 0.9,
+  weight: 1,
+  color: "#449944",
+  fillOpacity: 0.1,
+};
 
 // Trigger search.
 function handleMapClick(event) {
   mapStore.latLng = [event.latlng.lat.toFixed(5), event.latlng.lng.toFixed(5)];
+  if (circle) {
+    map.removeLayer(circle);
+  }
+  circle = L.circle(mapStore.latLng, {
+    radius: 40000,
+    stroke: false,
+    fillColor: "#888888",
+    fillOpacity: 0.5,
+  }).addTo(map);
   mapStore.search();
 }
 
@@ -32,7 +62,19 @@ watch(searchResults, async () => {
   }
 
   if (mapStore.searchResults) {
-    layer = L.geoJSON(mapStore.searchResults);
+    layer = L.geoJSON(mapStore.searchResults, {
+      style: function (feature) {
+        switch (feature.properties.huclevel) {
+          case 8:
+            return huc8Style;
+          case 10:
+            return huc10Style;
+          case 12:
+            return huc12Style;
+          default: // do nothing
+        }
+      },
+    });
     layer.addTo(map);
   } else {
     // No results, clear the map...?

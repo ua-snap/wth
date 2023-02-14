@@ -9,7 +9,7 @@ export default {
 
 <template>
   <div class="columns">
-    <div class="column is-one-quarter">
+    <div class="column is-one-third">
       <SearchResults />
     </div>
     <div class="column">
